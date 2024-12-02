@@ -21,7 +21,10 @@ public class MapGeneration : MonoBehaviour
 
     public GameObject tilePrefab;
     public GameObject wallPrefab;
-    public Transform map;
+    public Transform walls;
+    public Transform tiles;
+
+    public static Vector3[,] grid;
     #endregion
 
     #region Private Methods
@@ -30,11 +33,12 @@ public class MapGeneration : MonoBehaviour
     #endregion
     void Awake()
     {
-        PrintMap(position);
+        grid = new Vector3[rows, cols];
+        PrintMap();
     }
 
     #region Public Methods
-    public void PrintMap (Vector3 position)
+    public void PrintMap ()
     {
         float gridHeight = rows * (tileSize + margin);
         float gridWidth = cols * (tileSize + margin);
@@ -59,7 +63,7 @@ public class MapGeneration : MonoBehaviour
         {
             wallPrefab.transform.localPosition = wallPositions[i];
             wallPrefab.transform.localScale = wallDimension[i];
-            Instantiate(wallPrefab, map);
+            Instantiate(wallPrefab, walls);
 
         }
 
@@ -69,10 +73,30 @@ public class MapGeneration : MonoBehaviour
             {
                 position = new Vector3 (z * (tileSize + margin) - rowsOffset, 0, x * (tileSize + margin) - colsOffset);
                 tilePrefab.transform.localPosition = position;
-                Instantiate(tilePrefab, map);
+                Instantiate(tilePrefab, tiles);
 
+                grid[x, z] = position;
             }
+        }
+
+    }
+
+    public Vector2Int WorldToGrid(Vector3 worldPosition)
+    {
+        int x = Mathf.FloorToInt(worldPosition.x);
+        int z = Mathf.FloorToInt(worldPosition.z);
+        return new Vector2Int(x, z);
+    }
+
+    public Vector3 GridToWorld(int x, int y)
+    {
+        if (x >= 0 && x < rows && y >= 0 && y < cols)
+            return grid[x, y];
+        else
+        {
+            Debug.LogError("Grid coordinates out of bounds!");
+            return Vector3.zero;
         }
     }
     #endregion
-}
+    }
