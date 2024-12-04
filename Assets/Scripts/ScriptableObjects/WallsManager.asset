@@ -24,11 +24,11 @@ MonoBehaviour:
   - rowWallPosition: 30
     colWallPosition: 9.5
     rowLength: 1
-    colLength: 24
+    colLength: 24.1
   - rowWallPosition: -1
     colWallPosition: 9.5
     rowLength: 1
-    colLength: 24
+    colLength: 24.1
   - rowWallPosition: 7
     colWallPosition: 6
     rowLength: 1

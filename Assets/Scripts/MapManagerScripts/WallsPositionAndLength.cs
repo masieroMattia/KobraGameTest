@@ -9,8 +9,8 @@ public class WallsPositionAndLength
     #region Public Variables
     public float rowWallPosition;
     public float colWallPosition;
-    public int rowLength;
-    public int colLength;
+    public float rowLength;
+    public float colLength;
 
     #endregion
 }

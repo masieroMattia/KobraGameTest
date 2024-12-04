@@ -32,7 +32,7 @@ public class AdaptableCamera : MonoBehaviour
 
     public void AdaptCamera ()
     {
-        Vector3 gridCenter = new Vector3(widthSize / 2, 10.0f, (heightSize / 2) - (float)tileSize);
+        Vector3 gridCenter = new Vector3(widthSize / 2, 10.0f, (heightSize / 2) - (tileSize / 2));
 
         mainCamera.transform.position = gridCenter;
         

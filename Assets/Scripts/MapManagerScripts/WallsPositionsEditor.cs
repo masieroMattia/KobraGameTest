@@ -23,8 +23,8 @@ public class WallsPositionEditor : Editor
 
             wallPositions.positions[i].rowWallPosition = EditorGUILayout.FloatField("X", wallPositions.positions[i].rowWallPosition);
             wallPositions.positions[i].colWallPosition = EditorGUILayout.FloatField("Z", wallPositions.positions[i].colWallPosition);
-            wallPositions.positions[i].rowLength = EditorGUILayout.IntField("X Length", wallPositions.positions[i].rowLength);
-            wallPositions.positions[i].colLength = EditorGUILayout.IntField("Z Length", wallPositions.positions[i].colLength);
+            wallPositions.positions[i].rowLength = EditorGUILayout.FloatField("X Length", wallPositions.positions[i].rowLength);
+            wallPositions.positions[i].colLength = EditorGUILayout.FloatField("Z Length", wallPositions.positions[i].colLength);
 
             if (GUILayout.Button("Remove"))
                 ArrayUtility.RemoveAt(ref wallPositions.positions, i);
