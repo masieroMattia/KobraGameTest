@@ -8,7 +8,7 @@ public class AdaptableCamera : MonoBehaviour
 {
     #region Public Variables
     public Camera mainCamera;
-    public MapGeneration mapGeneration;
+    public MapGeneration map;
     #endregion
 
     #region Private Variables
@@ -24,9 +24,9 @@ public class AdaptableCamera : MonoBehaviour
     private void Start()
     {
         // Pass the size of the grid and tiles from MapGeneration script
-        widthSize = mapGeneration.GetWidthSize();
-        heightSize = mapGeneration.GetHeightSize();
-        tileSize = mapGeneration.TileSize;
+        widthSize = map.GetWidthSize();
+        heightSize = map.GetHeightSize();
+        tileSize = map.TileSize;
 
         // Method call
         AdaptCamera();

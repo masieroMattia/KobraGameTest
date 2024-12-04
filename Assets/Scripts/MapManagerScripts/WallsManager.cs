@@ -20,6 +20,5 @@ public class WallsPositionAndLength
     public float colWallPosition;
     public float rowLength;
     public float colLength;
-
     #endregion
 }
