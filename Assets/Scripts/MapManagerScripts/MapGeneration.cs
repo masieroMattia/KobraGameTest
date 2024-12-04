@@ -6,11 +6,11 @@ public class MapGeneration : MonoBehaviour
 {
     #region Public Variables
     [Min(10)]
-    public uint rows;
+    public uint rows; // X grid dimension
     [Min(10)]
-    public uint cols;
+    public uint cols; // Z grid dimension
     [Range(0.1f, 0.5f)]
-    public float margin = 0.1f;
+    public float margin = 0.1f; // Magin between tiles
 
     public GameObject tilePrefab;
     public GameObject wallPrefab;
@@ -26,11 +26,14 @@ public class MapGeneration : MonoBehaviour
     private int tileSize = 1;
     #endregion
 
+    // Property to get the value of tileSize
     public int TileSize {  get { return tileSize; } }
 
     void Awake()
     {
         grid = new Vector3[rows, cols];
+
+        // Methods calls
         PrintMap();
         GenerateWalls();
     }
@@ -38,7 +41,7 @@ public class MapGeneration : MonoBehaviour
     #region Public Methods
     public void PrintMap ()
     {
-
+        // cycle for grid creation
         for (int x = 0; x < rows; x++)
         {
             for (int z = 0; z < cols; z++)
@@ -55,6 +58,7 @@ public class MapGeneration : MonoBehaviour
 
     public void GenerateWalls()
     {
+        // Cycle for set the position and length of every wall of the array
         foreach (WallsPositionAndLength wall in wallsManager.positions)
         {
             float x = wall.rowWallPosition;
@@ -68,6 +72,7 @@ public class MapGeneration : MonoBehaviour
         }
     }
 
+    // Method that convert world space to grid space
     public Vector2Int WorldToGrid(Vector3 worldPosition)
     {
         int x = Mathf.FloorToInt(worldPosition.x);
@@ -75,6 +80,7 @@ public class MapGeneration : MonoBehaviour
         return new Vector2Int(x, z);
     }
 
+    // Method that convert grid space to world space
     public Vector3 GridToWorld(int x, int y)
     {
         if (x >= 0 && x < rows && y >= 0 && y < cols)
@@ -86,6 +92,8 @@ public class MapGeneration : MonoBehaviour
         }
     }
     #endregion
+
+    // Methods passing the size of the grid
 
     public float GetWidthSize ()
     {
