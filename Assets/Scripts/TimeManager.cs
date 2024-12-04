@@ -12,7 +12,7 @@ public class TimeManager : MonoBehaviour
     #endregion
 
     #region Private Variables
-    private bool isPaused = false;
+    //private bool isPaused = false;
     #endregion
 
     #region Life Cycle
@@ -31,8 +31,8 @@ public class TimeManager : MonoBehaviour
         eventToDo = action;
     }
 
-    public void Pause() { isPaused = true; }
+    //public void Pause() { isPaused = true; }
 
-    public void Resume() { isPaused = false; }
+    //public void Resume() { isPaused = false; }
     #endregion
 }

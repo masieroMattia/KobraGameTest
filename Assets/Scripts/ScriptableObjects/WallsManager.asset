@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4979dcd48f46f45409c5ed56ab19f48d, type: 3}
+  m_Name: WallsManager
+  m_EditorClassIdentifier: 
+  positions:
+  - rowWallPosition: 14.5
+    colWallPosition: -1
+    rowLength: 34
+    colLength: 1
+  - rowWallPosition: 14.5
+    colWallPosition: 20
+    rowLength: 34
+    colLength: 1
+  - rowWallPosition: 30
+    colWallPosition: 9.5
+    rowLength: 1
+    colLength: 24
+  - rowWallPosition: -1
+    colWallPosition: 9.5
+    rowLength: 1
+    colLength: 24
+  - rowWallPosition: 7
+    colWallPosition: 6
+    rowLength: 1
+    colLength: 3
