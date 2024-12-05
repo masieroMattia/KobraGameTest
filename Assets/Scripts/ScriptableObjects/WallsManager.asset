@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: WallsManager
   m_EditorClassIdentifier: 
   positions:
-  - rowWallPosition: 14.5
+  - rowWallPosition: 15
     colWallPosition: -1
-    rowLength: 34
+    rowLength: 32
     colLength: 1
-  - rowWallPosition: 14.5
+  - rowWallPosition: 14
     colWallPosition: 20
-    rowLength: 34
+    rowLength: 31
     colLength: 1
   - rowWallPosition: 30
-    colWallPosition: 9.5
+    colWallPosition: 10
     rowLength: 1
-    colLength: 24.1
+    colLength: 22
   - rowWallPosition: -1
-    colWallPosition: 9.5
+    colWallPosition: 9
     rowLength: 1
-    colLength: 24.1
+    colLength: 21
   - rowWallPosition: 7
     colWallPosition: 6
     rowLength: 1

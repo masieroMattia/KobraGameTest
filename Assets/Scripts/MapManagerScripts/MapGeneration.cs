@@ -7,11 +7,9 @@ public class MapGeneration : MonoBehaviour
 {
     #region Public Variables
     [Min(10)]
-    public uint rows; // X grid dimension
+    public int rows; // X grid dimension
     [Min(10)]
-    public uint cols; // Z grid dimension
-    [Range(0.1f, 0.5f)]
-    public float margin = 0.1f; // Magin between tiles
+    public int cols; // Z grid dimension
 
     public GameObject tilePrefab;
     public GameObject wallPrefab;
@@ -47,7 +45,7 @@ public class MapGeneration : MonoBehaviour
         {
             for (int z = 0; z < cols; z++)
             {
-                position = new Vector3 (z * (tileSize + margin), 0, x * (tileSize + margin) );
+                position = new Vector3 (z * tileSize, 0, x * tileSize);
                 tilePrefab.transform.localPosition = position;
                 Instantiate(tilePrefab, tiles);
 
@@ -65,7 +63,7 @@ public class MapGeneration : MonoBehaviour
             float x = wall.rowWallPosition;
             float z = wall.colWallPosition;
 
-            Vector3 position = new Vector3(x + (margin * x), 0, z + (margin * z));
+            Vector3 position = new Vector3(x, 0, z);
             GameObject wallObj = Instantiate(wallPrefab, walls);
             wallObj.transform.localPosition = position;
 
@@ -96,13 +94,13 @@ public class MapGeneration : MonoBehaviour
 
     // Methods passing the size of the grid
 
-    public float GetWidthSize ()
+    public int GetWidthSize ()
     {
-        return cols * (tileSize + margin);
+        return cols * tileSize;
     }
 
-    public float GetHeightSize()
+    public int GetHeightSize()
     {
-        return rows * (tileSize + margin);
+        return rows * tileSize;
     }
 }

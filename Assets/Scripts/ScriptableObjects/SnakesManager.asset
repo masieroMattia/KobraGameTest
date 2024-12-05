@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SnakesManager
   m_EditorClassIdentifier: 
   areas:
-  - rowStartTile: 2
-    colStartTile: 2
+  - rowStartTile: 1
+    colStartTile: 1
     rayArea: 3
-  - rowStartTile: 0
-    colStartTile: 0
-    rayArea: 3
+  - rowStartTile: 12
+    colStartTile: 12
+    rayArea: 4

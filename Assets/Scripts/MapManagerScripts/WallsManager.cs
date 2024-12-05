@@ -16,9 +16,9 @@ public class WallsPositionAndLength
 {
     // Variables for walls configuration
     #region Public Variables
-    public float rowWallPosition;
-    public float colWallPosition;
-    public float rowLength;
-    public float colLength;
+    public int rowWallPosition;
+    public int colWallPosition;
+    public int rowLength;
+    public int colLength;
     #endregion
 }

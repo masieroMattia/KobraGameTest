@@ -11,7 +11,8 @@ public class SnakesSpawner : MonoBehaviour
     public Transform snakes;
     public MapGeneration map;
     #endregion
-
+    #region Private Variables
+    #endregion
     #region Cycle Life
     void Start()
     {
@@ -31,7 +32,7 @@ public class SnakesSpawner : MonoBehaviour
             snakeObj.transform.localPosition = spawnPoint;
             
             SnakeMovement snakeMovement = snakeObj.GetComponent<SnakeMovement>();
-            snakeMovement.SetArea(area.rowStartTile, area.colStartTile, area.rayArea, map.margin);
+            snakeMovement.SetArea(area.rowStartTile, area.colStartTile, area.rayArea);
 
         }
     }
@@ -45,6 +46,6 @@ public class SnakesSpawner : MonoBehaviour
 
         int randomRow = Random.Range(x, x + ray);
         int randomCol = Random.Range(z, z + ray);
-        return new Vector3(randomRow + (randomRow * map.margin), 0.0f, randomCol + (randomRow * map.margin));
+        return new Vector3(randomRow, 0.0f, randomCol);
     }
 }
