@@ -52,7 +52,6 @@ public class SnakeMovement : MonoBehaviour
 
         transform.localPosition = position;
 
-        Debug.Log(position);
 
     }
     #endregion

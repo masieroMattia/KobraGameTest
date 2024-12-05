@@ -90,7 +90,6 @@ public class MapGeneration : MonoBehaviour
             return Vector3.zero;
         }
     }
-    #endregion
 
     // Methods passing the size of the grid
 
@@ -103,4 +102,9 @@ public class MapGeneration : MonoBehaviour
     {
         return rows * tileSize;
     }
+    #endregion
+
+    #region Private Methods
+
+    #endregion
 }
