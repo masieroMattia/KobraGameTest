@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 191453e66c7cb574580baf574858cfa3, type: 3}
-  m_Name: SnakesManager
+  m_Name: EggsManager
   m_EditorClassIdentifier: 
   areas:
-  - rowStartTile: 13
-    colStartTile: 4
+  - rowStartTile: 10
+    colStartTile: 10
     rayArea: 3
