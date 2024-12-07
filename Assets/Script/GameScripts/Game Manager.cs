@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Color colorGameOverPanel = Color.red; // Game Over Panel color
     [SerializeField] private Color colorGameOverText = Color.black; // Game Over Text color
     [SerializeField] private FontStyles fontStyleGameOverText = FontStyles.Bold; // Game Over Text Font
+    [HideInInspector] public bool isGameOverTransitioning = false; // Flag to track the transition
+
 
     [Header("Egg UI Settings")]
     [SerializeField] private Color colorEggsText = Color.black; // Game Over Text color
@@ -33,8 +35,9 @@ public class GameManager : MonoBehaviour
     private Canvas canvas; // Canvas reference
     private MyTime myTime; // MyTime class reference
     private bool isShowMenu = true; // Show the stop panel
-    private bool isGameOverTransitioning = false; // Flag to track the transition
     private float elapsedTime = 0f; // Time elapsed for transition
+    private float startTransitionTime = 0f; // Track when the transition starts
+
     #endregion
 
 
@@ -91,10 +94,10 @@ public class GameManager : MonoBehaviour
         {
             // Increment elapsed time with unscaled delta time (for consistent timing even when game is paused)
             elapsedTime += Time.unscaledDeltaTime;
-
             // If transition is complete, show the Game Over panel
             if (elapsedTime >= gameOverTransitionTime)
             {
+
                 isGameOverTransitioning = false;
                 ShowGameOver();
             }
@@ -136,9 +139,11 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        StopGame();
+        startTransitionTime = Time.realtimeSinceStartup; // Record the time when game over is triggered
         elapsedTime = 0;
-        //ShowGameOver();
+        isGameOverTransitioning = true;
+        Debug.Log(isGameOverTransitioning.ToString());
+        StopGame();
 
     } // Function that handle the game over and its transitioning
 

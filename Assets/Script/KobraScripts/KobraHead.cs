@@ -224,7 +224,7 @@ public class KobraHead : MonoBehaviour
         for (int i = 1; i < initialStartTailSize + 1; i++)
         {
             Transform kobraTail= Instantiate(tailPrefab, this.transform);
-            levelGrid.ApplyColorsChild(kobraTail.gameObject, tailColor);
+            colorManager.ApplyColorsPrefab(kobraTail.gameObject, tailColor);
             kobraList.Add(kobraTail);
 
             if (i > 0)
@@ -242,7 +242,7 @@ public class KobraHead : MonoBehaviour
         Transform newTail = Instantiate(tailPrefab,this.transform);
         newTail.position = (Vector3)(Vector3Int.RoundToInt(kobraList[kobraList.Count - 1].position - currentDirection * moveStep));
         kobraList.Add(newTail);
-        levelGrid.ApplyColorsChild(newTail.gameObject,tailColor);
+        colorManager.ApplyColorsPrefab(newTail.gameObject,tailColor);
     }
     private void DecreaseKobra()
     {
@@ -275,44 +275,78 @@ public class KobraHead : MonoBehaviour
 
         
     }
-    private void CollideWall()
-    {
-        for(int i = 0; i < wallPositions.Length; i++)
-        {
-            if ((int)wallPositions[i].rowWallPosition == Mathf.RoundToInt(kobraHeadListPosition.localPosition.x) &&
-                (int)wallPositions[i].colWallPosition == Mathf.RoundToInt(kobraHeadListPosition.localPosition.z))
-            {
-                gameManager.GameOver();
-            }
-
-        }
-    }
     private void CollideWalls()
     {
+        if (gameManager.isGameOverTransitioning) return;
         if (wallPositions == null || wallPositions.Length == 0) return;
 
+        // Converte la posizione della testa del Kobra a interi per allinearla alla griglia
         Vector3Int kobraHeadPos = Vector3Int.RoundToInt(kobraHeadListPosition.localPosition);
-
+        
         foreach (var wall in wallPositions)
         {
-            // Definizione dei limiti del muro
-            int wallMinX = wall.rowWallPosition;
-            int wallMaxX = wall.rowWallPosition + wall.rowLength - 1;
-            int wallMinZ = wall.colWallPosition;
-            int wallMaxZ = wall.colWallPosition + wall.colLength - 1;
 
-            // Verifica se la testa del Kobra è all'interno dei limiti
+            // Calcola la metà della lunghezza del muro (con 'lunghezza - 1' per l'indice corretto)
+            int halfLengthX = (wall.rowLength - 1) / 2;
+            int halfLengthZ = (wall.colLength - 1) / 2;
+
+            // Calcola i limiti del muro considerando la metà della lunghezza
+            int wallMinX = wall.rowWallPosition - halfLengthX;
+            int wallMaxX = wall.rowWallPosition + halfLengthX; // Fine inclusiva
+            int wallMinZ = wall.colWallPosition - halfLengthZ;
+            int wallMaxZ = wall.colWallPosition + halfLengthZ; // Fine inclusiva
+
+            // Controlla se la testa del Kobra è all'interno dei limiti del muro
             if (kobraHeadPos.x >= wallMinX && kobraHeadPos.x <= wallMaxX &&
                 kobraHeadPos.z >= wallMinZ && kobraHeadPos.z <= wallMaxZ)
             {
                 Debug.Log($"Collisione con il muro a posizione X: {kobraHeadPos.x}, Z: {kobraHeadPos.z}");
+                MoveBackward();
                 gameManager.GameOver();
-                break;
+                return;
             }
         }
     }
+    private void MoveBackward()
+    {
+        // Calcola la direzione opposta rispetto alla direzione attuale
+        Vector3Int oppositeDirection = -currentDirection;
 
-    
+        // Inizia a muovere il corpo, partendo dall'ultimo segmento della coda
+        // Sposta ogni segmento in avanti (o meglio, in direzione opposta)
+        for (int i = 0; i < kobraList.Count - 1; i++)
+        {
+            kobraList[i].localPosition = kobraList[i + 1].localPosition;
+
+                
+        }
+        kobraList[kobraList.Count - 1].localPosition = WrapAround(Vector3Int.RoundToInt(kobraList[1].localPosition + oppositeDirection * moveStep));
+
+
+
+        CheckGameOver();
+    }
+    private void MoveBackwards()
+    {
+        // Calcola la direzione opposta rispetto alla direzione attuale
+        Vector3Int oppositeDirection = -currentDirection;
+
+        // Sposta i segmenti, partendo dal primo segmento (index 0) fino all'ultimo
+        for (int i = kobraList.Count - 1; i > 0; i--)
+        {
+            // Ogni segmento si sposta nella posizione del segmento precedente
+            kobraList[i].localPosition = kobraList[i - 1].localPosition;
+        }
+
+        // Sposta la testa del serpente nella posizione desiderata, ma con direzione opposta
+        kobraList[0].localPosition = WrapAround(Vector3Int.RoundToInt(kobraList[0].localPosition + oppositeDirection * moveStep));
+
+        // Controlla se c'è qualche collisione con il corpo
+        CheckGameOver();
+    }
+
+
+
     private void CheckGameOver()
     {
         // Controlla se la testa si scontra con altri segmenti della testa
@@ -320,7 +354,6 @@ public class KobraHead : MonoBehaviour
         {
             if (Vector3Int.RoundToInt(kobraList[i].localPosition) == Vector3Int.RoundToInt(kobraHeadListPosition.localPosition))
             {
-                Debug.Log("c");
                 gameManager.GameOver();
             }
         }
@@ -330,6 +363,8 @@ public class KobraHead : MonoBehaviour
         spawnedEggs = eggsList;
         Debug.Log("Updated spawned eggs list in SneakHead.");
     }
+   
+
     private Vector3Int WrapAround(Vector3Int kobraPosition)
     {
         if (kobraPosition.x < 0)

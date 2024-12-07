@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -25,11 +26,12 @@ public class LevelGrid : MonoBehaviour
     #region Private variables
     private Vector3Int eggPosition;
     private MyTime myTime = null;
+    private ColorManager colorManager;
     private UnityAction methodList;
     private GameObject[,] grids;
     private List<Transform> spawnedItems = new List<Transform>();
     private GameObject ParentFoodObject;
-    private int spacingGrid = 1;
+    public int spacingGrid = 1;
 
     #endregion
 
@@ -38,6 +40,9 @@ public class LevelGrid : MonoBehaviour
     {
         // Instantiate the time
         myTime = new MyTime();
+
+        // Instantiate the color manager
+        colorManager = new ColorManager();
 
         // Verify the presence of the square prefab for the grid creation
         if (gridPrefab == null)
@@ -71,15 +76,14 @@ public class LevelGrid : MonoBehaviour
             {
                 // Use Vector3Int for grid positions
                 Vector3Int spawnPosition = new Vector3Int(x * spacingGrid, 0, z * spacingGrid);
+                
                 // Create a gameObject with the prefab inside
-                GameObject newSquare = Instantiate(gridPrefab);
-                // Giving the random position to the new gameObject with the prefab inside
-                newSquare.transform.position = spawnPosition;
-                // Setting the parent of the new gameObject with the prefab inside
-                newSquare.transform.SetParent(gridParent);
+                GameObject newSquare = Instantiate(gridPrefab, spawnPosition, Quaternion.identity, gridParent); 
+                
                 //Setting color prefab for the frame and cube
-                ApplyColorsChildPrefab(newSquare, "Border", borderColor);
-                ApplyColorsChildPrefab(newSquare, "Cube", cubeColor);
+                colorManager.ApplyColorsSpecificChildPrefab(newSquare, "Border", borderColor);
+                colorManager.ApplyColorsSpecificChildPrefab(newSquare, "Cube", cubeColor);
+                
                 // Adding the new gameObject with the prefab inside the array position of the two for
                 grids[x, z] = newSquare;
             }
@@ -155,56 +159,56 @@ public class LevelGrid : MonoBehaviour
 
         return positionOccupied;
     }
-    public void ApplyColorsChildPrefab(GameObject parent, string childName, Color color)
-    {
-        Transform child = parent.transform.Find(childName);
-        if (child == null)
-        {
-            Debug.LogError($"Child '{childName}' not found in prefab '{parent.name}'");
-            return;
-        }
-
-        Renderer renderer = child.GetComponent<Renderer>();
-        if (renderer == null)
-        {
-            Debug.LogError($"Renderer not found on child '{childName}' in prefab '{parent.name}'");
-            return;
-        }
-
-        renderer.material.color = color;
-    }
-    public void ApplyColorsChild(GameObject parent, Color color)
-    {
-        if (parent == null)
-        {
-            Debug.LogError($"Parent '{parent}' not found");
-            return;
-        }
-
-        Renderer renderer = parent.GetComponentInChildren<Renderer>();
-        if (renderer == null)
-        {
-            Debug.LogError($"Renderer not found on child in parent '{parent}'");
-            return;
-        }
-
-        renderer.material.color = color;
-    }
 
     private void GenerateWalls()
     {
-        // Cycle for set the position and length of every wall of the array
+        // Definire i limiti predefiniti per le posizioni e le lunghezze dei muri
+        int defaultRowLength = 3;  // Lunghezza predefinita del muro nella direzione della riga
+        int defaultColLength = 3;  // Lunghezza predefinita del muro nella direzione della colonna
+        int maxGridSize = 100;     // Dimensione massima della griglia (aggiusta come necessario)
+        int minGridSize = 0;       // Dimensione minima della griglia (aggiusta come necessario)
+
+        // Ciclo per impostare la posizione e la lunghezza di ogni muro nell'array
         foreach (WallsPositionAndLength wall in walls.positions)
         {
-            float x = wall.rowWallPosition;
-            float z = wall.colWallPosition;
+            // Impostare i valori di lunghezza della riga e della colonna se sono invalidi o non impostati
+            int rowLength = wall.rowLength > 0 ? wall.rowLength : defaultRowLength;
+            int colLength = wall.colLength > 0 ? wall.colLength : defaultColLength;
 
-            Vector3 position = new Vector3(x, 0, z);
+            // Clampa i valori di posizione del muro per assicurarti che siano all'interno dei limiti della griglia
+            int x = Mathf.Clamp(Mathf.RoundToInt(wall.rowWallPosition), minGridSize, sizeXGrid - 1);
+            int z = Mathf.Clamp(Mathf.RoundToInt(wall.colWallPosition), minGridSize, sizeZGrid - 1);
+
+            // Clampa le lunghezze dei muri per assicurarti che non superino le dimensioni della griglia
+            rowLength = Mathf.Clamp(rowLength, 1, sizeXGrid - x);  // Assicurati che rowLength rientri nella larghezza della griglia
+            colLength = Mathf.Clamp(colLength, 1, sizeZGrid - z);  // Assicurati che colLength rientri nell'altezza della griglia
+
+            // Salva i valori clamped nell'array walls.positions
+            wall.rowWallPosition = x;  // Posizione della riga
+            wall.colWallPosition = z;  // Posizione della colonna
+            wall.rowLength = rowLength;  // Lunghezza del muro nella direzione della riga
+            wall.colLength = colLength;  // Lunghezza del muro nella direzione della colonna
+
+            // Calcola la posizione corretta per il muro sulla griglia
+            Vector3 position = new Vector3(x * spacingGrid, 0, z * spacingGrid);
+
+            // Instanzia il prefab del muro nella posizione calcolata
             GameObject wallObj = Instantiate(wallPrefab, wallsParent);
             wallObj.transform.localPosition = position;
 
-            wallObj.transform.localScale = new Vector3(wall.rowLength, wallObj.transform.localScale.y, wall.colLength);
+            // Imposta la scala del muro usando le lunghezze clamped (moltiplicate per spacingGrid)
+            wallObj.transform.localScale = new Vector3(rowLength * spacingGrid, wallObj.transform.localScale.y, colLength * spacingGrid);
         }
     }
+
+
+
+
+
+
+
+
+
+
     #endregion
 }

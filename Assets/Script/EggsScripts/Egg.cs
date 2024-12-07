@@ -25,7 +25,8 @@ public class Egg : MonoBehaviour
     #endregion
 
     #region Private variables
-    private MyTime myTime = null;
+    private MyTime myTime;
+    private ColorManager colorManager;
     private UnityAction methodList;
     private List<Transform> spawnedEggs = new List<Transform>();
     private LevelGrid levelGrid;
@@ -36,7 +37,8 @@ public class Egg : MonoBehaviour
     {
         // Instantiate the time
         myTime = new MyTime();
-
+        // Instantiate the color manager
+        colorManager = new ColorManager();
         // Verify the presence of the square prefab for the grid creation
         if (eggPrefab == null)
         {
@@ -85,7 +87,7 @@ public class Egg : MonoBehaviour
        
         GameObject eggObject = levelGrid.SpawnItemOnTheGrid(eggPrefab, this.gameObject);
         spawnedEggs.Add(eggObject.transform);
-        levelGrid.ApplyColorsChild(eggObject, eggColor);
+        colorManager.ApplyColorsPrefab(eggObject, eggColor);
         // Attiva l'evento per notificare SneakHead
         OnEggSpawned?.Invoke(spawnedEggs);
     }
