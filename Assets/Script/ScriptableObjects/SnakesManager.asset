@@ -16,3 +16,9 @@ MonoBehaviour:
   - rowStartTile: 13
     colStartTile: 4
     rayArea: 3
+  - rowStartTile: 8
+    colStartTile: 19
+    rayArea: 3
+  - rowStartTile: 78
+    colStartTile: 74
+    rayArea: 3

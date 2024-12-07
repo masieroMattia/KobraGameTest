@@ -116,7 +116,26 @@ public class LevelGrid : MonoBehaviour
             return SpawnItemOnTheGrid(itemPrefab, parentObject);
         }
     }
+    public GameObject SpawnItemOnGridPosition(GameObject itemPrefab, GameObject parentObject, int x, int z)
+    {
+        // Instantiate the item at the spawn position
+        GameObject itemGameObject = Instantiate(itemPrefab);
+        itemGameObject.transform.position = new Vector3Int(x, 0, z);
+        itemGameObject.transform.SetParent(parentObject.transform);
 
+        // Check for overlap with existing items on the grid
+        if (!SpawnOverlap(spawnedItems, itemGameObject))
+        {
+            spawnedItems.Add(itemGameObject.transform);
+            return itemGameObject;
+        }
+        else
+        {
+            // If overlap is found, destroy the item and try again
+            Destroy(itemGameObject.gameObject);
+            return SpawnItemOnTheGrid(itemPrefab, parentObject);
+        }
+    }
     private bool SpawnOverlap(List<Transform> spawnedItems, GameObject itemGameObject)
     {
         bool positionOccupied = false;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WallsManager
   m_EditorClassIdentifier: 
   positions:
-  - rowWallPosition: 1
-    colWallPosition: 4
+  - rowWallPosition: 2
+    colWallPosition: 2
     rowLength: 1
-    colLength: 3
+    colLength: 1

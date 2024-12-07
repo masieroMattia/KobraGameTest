@@ -75,19 +75,30 @@ public class Egg : MonoBehaviour
     }
     void Update()
     {
-        // Spawn egg every seconds 
-        myTime.Every(eggSpawnEvery, methodList);
+        StartSpawningEgg();
     }
     #endregion
 
     #region Private method
     private void SpawnEgg()
-    {       
+    {
+       
         GameObject eggObject = levelGrid.SpawnItemOnTheGrid(eggPrefab, this.gameObject);
         spawnedEggs.Add(eggObject.transform);
         levelGrid.ApplyColorsChild(eggObject, eggColor);
         // Attiva l'evento per notificare SneakHead
         OnEggSpawned?.Invoke(spawnedEggs);
+    }
+    private void StartSpawningEgg()
+    {
+        // Spawn egg every seconds 
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+        {
+            Debug.Log("Kobra started moving");
+            myTime.Every(eggSpawnEvery, methodList);// Spawn egg every decided seconds 
+
+
+        }
     }
  
 

@@ -10,6 +10,10 @@ public class WallsPositionEditor : Editor // Derived class from class Editor for
     public override void OnInspectorGUI()
     {
         WallsManager wallPositions = (WallsManager)target; // Casting target (from Editor class) to the custom type WallsManager for free access to Editor properties and methods 
+        
+        // Track Undo
+        Undo.RecordObject(wallPositions, "Modify WallsManager");
+
         if (GUILayout.Button("Add Position")) // Button to add a new position
             ArrayUtility.Add(ref wallPositions.positions, new WallsPositionAndLength()); // Add a new wall object to the position
         if (GUILayout.Button("Clear Positions")) // Button to clear the array
@@ -38,8 +42,12 @@ public class WallsPositionEditor : Editor // Derived class from class Editor for
             EditorGUILayout.EndVertical(); 
             EditorGUILayout.Space();
         }
-        // Mark the object as "dirty" to ensure changes are saved
-        EditorUtility.SetDirty(target);
+        // Mark as dirty to save changes
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(wallPositions);
+        }
+        
     }
 }
 
