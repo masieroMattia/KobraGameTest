@@ -9,17 +9,32 @@ public class MenuNavigation : MonoBehaviour
     public GameObject menu;
     public GameObject rules;
     public GameObject levels;
+    private AudioManager audioManager;  
     #endregion
 
     #region Life Cycle
+
     private void Start()
     {
+        audioManager = FindObjectOfType<AudioManager>();
+        if (audioManager != null)
+        {
+            Debug.Log("Audio Manager trovato");
+        }
+        if (audioManager == null)
+        {
+            Debug.LogError("Audio Manager non trovato");
+        }
+        audioManager.PlayClipAtPoint(audioManager.titleScreen, audioManager.BGM, true, true);
         // Set the main menu the first window active
         menu.SetActive(true);
+        rules.SetActive(false);
+        levels.SetActive(false);
     }
 
     private void Update()
     {
+
         // Permit to return the main menu window pressing the ESC key
         bool back = !menu.activeSelf && Input.GetKey(KeyCode.Escape);
         if (back)
@@ -33,6 +48,12 @@ public class MenuNavigation : MonoBehaviour
 
     #region Public Methods
     // Enter rules menu
+    public void BackMenu()
+    {
+        menu.SetActive(true);
+        rules.SetActive(false);
+        levels.SetActive(false);
+    }
     public void ShowRules()
     {
         rules.SetActive(true);
@@ -53,5 +74,7 @@ public class MenuNavigation : MonoBehaviour
         Debug.Log("Quit the game."); // Console feedback
         Application.Quit(); // Quit the game
     }
+
+
     #endregion
 }

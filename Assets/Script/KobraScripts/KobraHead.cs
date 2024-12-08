@@ -38,6 +38,7 @@ public class KobraHead : MonoBehaviour
 
     [Header("Wall Reference")]
     [SerializeField] private WallsManager wallsManager;
+
     #endregion
 
     #region Private variables
@@ -45,6 +46,7 @@ public class KobraHead : MonoBehaviour
     private ColorManager colorManager; // ColorManager class reference
     private MyTime movementTimer; // MyTime class reference
     private LevelGrid levelGrid; // LevelGrid class reference
+    private AudioManager audioManager; // AudioManager class reference
 
     private List<Transform> kobraList; // Kobra List 
     private List<Transform> spawnedEggs = new List<Transform>(); // Eggs list
@@ -73,7 +75,7 @@ public class KobraHead : MonoBehaviour
         
         // Instatiate the Color Manager
         colorManager = new ColorManager();
-        
+                
         // Kobra List 
         kobraList = new List<Transform>();
 
@@ -107,6 +109,17 @@ public class KobraHead : MonoBehaviour
             Debug.LogError("Game Manager non trovato");
         }
 
+        // Find a object with a 'GameManager' component
+        audioManager = FindObjectOfType<AudioManager>();
+        if (audioManager != null)
+        {
+            Debug.Log("Audio Manager trovato");
+        }
+        if (audioManager == null)
+        {
+            Debug.LogError("Audio Manager non trovato");
+        }
+
         // Find a object with a 'Egg' component
         Egg eggsManager = FindObjectOfType<Egg>();
         if (eggsManager != null)
@@ -137,7 +150,9 @@ public class KobraHead : MonoBehaviour
         }
     }
     void Start()
-    {        
+    {
+        audioManager.PlayClipAtPoint(audioManager.level1,audioManager.BGM,true,true);
+       
         transform.position = Vector3.zero;
         SpawnHead();
     }
@@ -235,6 +250,7 @@ public class KobraHead : MonoBehaviour
             }
 
         }
+        audioManager.PlayClipAtPoint(audioManager.kobraSpawn,audioManager.SFX,true, false);
         Debug.Log("Testa del serpente generata con successo.");
     }
     private void GrowKobra()
@@ -261,6 +277,7 @@ public class KobraHead : MonoBehaviour
         {
             if (Vector3Int.RoundToInt(kobraHeadListPosition.localPosition) == Vector3Int.RoundToInt(spawnedEggs[i].localPosition))
             {
+                audioManager.PlayClipAtPoint(audioManager.eggEaten, audioManager.SFX, true, false);
                 Transform eggToDestroy = spawnedEggs[i];
                 spawnedEggs.RemoveAt(i);
                 if (eggToDestroy != null)
@@ -302,6 +319,7 @@ public class KobraHead : MonoBehaviour
             {
                 Debug.Log($"Collisione con il muro a posizione X: {kobraHeadPos.x}, Z: {kobraHeadPos.z}");
                 MoveBackward();
+                audioManager.PlayClipAtPoint(audioManager.kobraDeath, audioManager.SFX, true, false);
                 gameManager.GameOver();
                 return;
             }
@@ -321,31 +339,8 @@ public class KobraHead : MonoBehaviour
                 
         }
         kobraList[kobraList.Count - 1].localPosition = WrapAround(Vector3Int.RoundToInt(kobraList[1].localPosition + oppositeDirection * moveStep));
-
-
-
-        CheckGameOver();
     }
-    private void MoveBackwards()
-    {
-        // Calcola la direzione opposta rispetto alla direzione attuale
-        Vector3Int oppositeDirection = -currentDirection;
-
-        // Sposta i segmenti, partendo dal primo segmento (index 0) fino all'ultimo
-        for (int i = kobraList.Count - 1; i > 0; i--)
-        {
-            // Ogni segmento si sposta nella posizione del segmento precedente
-            kobraList[i].localPosition = kobraList[i - 1].localPosition;
-        }
-
-        // Sposta la testa del serpente nella posizione desiderata, ma con direzione opposta
-        kobraList[0].localPosition = WrapAround(Vector3Int.RoundToInt(kobraList[0].localPosition + oppositeDirection * moveStep));
-
-        // Controlla se c'è qualche collisione con il corpo
-        CheckGameOver();
-    }
-
-
+    
 
     private void CheckGameOver()
     {
@@ -354,6 +349,7 @@ public class KobraHead : MonoBehaviour
         {
             if (Vector3Int.RoundToInt(kobraList[i].localPosition) == Vector3Int.RoundToInt(kobraHeadListPosition.localPosition))
             {
+                audioManager.PlayClipAtPoint(audioManager.kobraDeath, audioManager.SFX, true, false);
                 gameManager.GameOver();
             }
         }

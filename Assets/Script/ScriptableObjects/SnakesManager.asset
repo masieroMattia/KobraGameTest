@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 191453e66c7cb574580baf574858cfa3, type: 3}
   m_Name: SnakesManager
   m_EditorClassIdentifier: 
-  areas: []
+  areas:
+  - rowStartTile: 9
+    colStartTile: 5
+    rayArea: 3

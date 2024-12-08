@@ -32,8 +32,11 @@ public class GameManager : MonoBehaviour
 
     #region Private Variables
     private ColorManager colorManager; // ColorManager class reference
-    private Canvas canvas; // Canvas reference
     private MyTime myTime; // MyTime class reference
+    private AudioManager audioManager; // Audio Manager class reference
+
+    private Canvas canvas; // Canvas reference
+
     private bool isShowMenu = true; // Show the stop panel
     private float elapsedTime = 0f; // Time elapsed for transition
     private float startTransitionTime = 0f; // Track when the transition starts
@@ -50,6 +53,16 @@ public class GameManager : MonoBehaviour
 
         // Instatiate the Color Manager
         colorManager = new ColorManager();
+
+        audioManager = FindObjectOfType<AudioManager>();
+        if (audioManager != null)
+        {
+            Debug.Log("Audio Manager trovato");
+        }
+        if (audioManager == null)
+        {
+            Debug.LogError("Audio Manager non trovato");
+        }
 
         // Getting the Cavas Component
         canvas = GetComponent<Canvas>();
@@ -139,6 +152,11 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        // Stop level1 background music
+        audioManager.StopClip(audioManager.level1);
+
+        // Play deathScreen sound
+        audioManager.PlayClipAtPoint(audioManager.deathScreen,audioManager.BGM, true, true);
         startTransitionTime = Time.realtimeSinceStartup; // Record the time when game over is triggered
         elapsedTime = 0;
         isGameOverTransitioning = true;

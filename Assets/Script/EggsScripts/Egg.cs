@@ -98,8 +98,6 @@ public class Egg : MonoBehaviour
         {
             Debug.Log("Kobra started moving");
             myTime.Every(eggSpawnEvery, methodList);// Spawn egg every decided seconds 
-
-
         }
     }
  

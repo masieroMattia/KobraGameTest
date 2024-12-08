@@ -5,7 +5,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class SnakeMovement : MonoBehaviour
 {
-    public float speed = 1.0f;
+    public int speed = 1;
 
     #region Private Variables
     private int rowStart;
@@ -23,8 +23,8 @@ public class SnakeMovement : MonoBehaviour
 
     void Update()
     {
-        RandomMovement();
-        KeepInArea();
+        //RandomMovement();
+        //KeepInArea();
     }
     #endregion
 
