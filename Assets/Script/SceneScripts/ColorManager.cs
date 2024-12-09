@@ -42,12 +42,16 @@ public class ColorManager
             Debug.LogError($"Renderer not found on child in parent '{parent}'");
             return;
         }
+        if (parent != null && parent.transform.parent != null)
+        {
+            Material unlitMaterial = new Material(Shader.Find("Unlit/Color"));
+            unlitMaterial.color = color;  // Imposta il colore nel materiale Unlit
+            renderer.material = unlitMaterial;
+        } // Check if parent exists
 
-        Material unlitMaterial = new Material(Shader.Find("Unlit/Color"));
-        unlitMaterial.color = color;  // Imposta il colore nel materiale Unlit
-        renderer.material = unlitMaterial;
+            
     }
-
+    
     // Metodo per applicare il materiale Unlit a un componente specifico
     public void ApplyColorsComponent(GameObject parent, Component component, Color color)
     {

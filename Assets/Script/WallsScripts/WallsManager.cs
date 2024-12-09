@@ -22,13 +22,6 @@ public class WallsPositionAndLength
     public int colLength;
     #endregion
 
-    public void AlignWallToGrid(int gridCellSize)
-    {
-        // Calcolare la posizione di partenza, arrotondando ai multipli di gridCellSize
-        rowLength = Mathf.RoundToInt(rowLength / gridCellSize) * gridCellSize;
-        colLength = Mathf.RoundToInt(colLength / gridCellSize) * gridCellSize;
-    }
-
 
 
 

@@ -84,8 +84,17 @@ public class Egg : MonoBehaviour
     #region Private method
     private void SpawnEgg()
     {
-       
+        if (eggPrefab == null)
+        {
+            Debug.LogError("Egg Prefab is null in SpawnEgg.");
+            return;
+        }
         GameObject eggObject = levelGrid.SpawnItemOnTheGrid(eggPrefab, this.gameObject);
+        if (eggObject == null)
+        {
+            Debug.LogError("Failed to instantiate Egg Prefab.");
+            return;
+        }
         spawnedEggs.Add(eggObject.transform);
         colorManager.ApplyColorsPrefab(eggObject, eggColor);
         // Attiva l'evento per notificare SneakHead
@@ -93,6 +102,7 @@ public class Egg : MonoBehaviour
     }
     private void StartSpawningEgg()
     {
+
         // Spawn egg every seconds 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
         {

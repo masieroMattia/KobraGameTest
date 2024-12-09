@@ -16,14 +16,22 @@ using static Unity.VisualScripting.Member;
 public class AudioManager : MonoBehaviour
 {
     #region Public variables
-    [Header("OST reference")]
-    [Header("SFX reference")]
-    public AudioClip eggEaten;
-    public AudioClip kobraSpawn;
-    public AudioClip kobraDeath;
+    [Header("BGM reference")]
     public AudioClip deathScreen;
     public AudioClip level1;
+    public AudioClip levelStarted;
     public AudioClip titleScreen;
+    [Header("SFX reference")]
+    public AudioClip eggEaten;
+   
+    public AudioClip kobraSpawn;
+    public AudioClip kobraDeath;    
+    public AudioClip kobraResurrect;
+    public AudioClip kobraDirection;   
+
+    public AudioClip maskCollected;
+    public AudioClip maskSpawned;
+
 
     public AudioMixerGroup BGM;
     public AudioMixerGroup SFX;
@@ -43,25 +51,40 @@ public class AudioManager : MonoBehaviour
         if (clip == null)
         {
             Debug.LogError("AudioClip is null!");
+            return;
         }
-        //	Prepare game object for audio source component
+
+        // Check if the clip is already playing before playing again
+        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+        foreach (var audioSource in allAudioSources) // Changed 'source' to 'audioSource'
+        {
+            if (audioSource.clip == clip && audioSource.isPlaying)
+            {
+                // If the clip is already playing, do not play it again
+                return;
+            }
+        }
+
+        // Prepare the game object for audio source component
         GameObject sourceGO = new GameObject($"{clip.name}@{Time.frameCount}");
 
-        //	Add the audio source component to the created game object
-        AudioSource source = sourceGO.AddComponent<AudioSource>();
+        // Add the audio source component to the created game object
+        AudioSource source = sourceGO.AddComponent<AudioSource>();  // This 'source' is fine, as it is not inside the foreach loop
 
-        //	Prepare audio source with needed data
+        // Prepare audio source with needed data
         source.clip = clip;
-        source.spatialBlend = 1.0f; //	3D sound
+        source.spatialBlend = 1.0f; // 3D sound
         source.loop = loop;
-        if (!loop)  //	Looping sounds must not destroy after the duration of a single loop
+        if (!loop)  // Looping sounds must not destroy after the duration of a single loop
             Destroy(sourceGO, clip.length);
 
         source.outputAudioMixerGroup = targetGroup;
 
-        //	Play audio clip
+        // Play audio clip
         source.Play();
     }
+
+
     public void StopClip(AudioClip clip)
     {
         // Find all objects of type AudioSource in the scene

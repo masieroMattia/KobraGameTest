@@ -13,47 +13,7 @@ MonoBehaviour:
   m_Name: WallsManager
   m_EditorClassIdentifier: 
   positions:
-  - rowWallPosition: 0
-    colWallPosition: 1
-    rowLength: 1
-    colLength: 3
-  - rowWallPosition: 0
-    colWallPosition: 3
-    rowLength: 1
-    colLength: 1
-  - rowWallPosition: 2
-    colWallPosition: 0
+  - rowWallPosition: 5
+    colWallPosition: 8
     rowLength: 3
-    colLength: 1
-  - rowWallPosition: 10
-    colWallPosition: 0
-    rowLength: 3
-    colLength: 1
-  - rowWallPosition: 12
-    colWallPosition: 0
-    rowLength: 1
-    colLength: 1
-  - rowWallPosition: 18
-    colWallPosition: 0
-    rowLength: 3
-    colLength: 1
-  - rowWallPosition: 20
-    colWallPosition: 0
-    rowLength: 1
-    colLength: 1
-  - rowWallPosition: 27
-    colWallPosition: 0
-    rowLength: 3
-    colLength: 1
-  - rowWallPosition: 29
-    colWallPosition: 0
-    rowLength: 1
-    colLength: 1
-  - rowWallPosition: 29
-    colWallPosition: 2
-    rowLength: 1
-    colLength: 3
-  - rowWallPosition: 29
-    colWallPosition: 9
-    rowLength: 1
-    colLength: 3
+    colLength: 4

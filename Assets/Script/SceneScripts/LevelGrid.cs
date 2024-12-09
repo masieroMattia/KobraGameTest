@@ -76,14 +76,14 @@ public class LevelGrid : MonoBehaviour
             {
                 // Use Vector3Int for grid positions
                 Vector3Int spawnPosition = new Vector3Int(x * spacingGrid, 0, z * spacingGrid);
-                
+
                 // Create a gameObject with the prefab inside
-                GameObject newSquare = Instantiate(gridPrefab, spawnPosition, Quaternion.identity, gridParent); 
-                
+                GameObject newSquare = Instantiate(gridPrefab, spawnPosition, Quaternion.identity, gridParent);
+
                 //Setting color prefab for the frame and cube
                 colorManager.ApplyColorsSpecificChildPrefab(newSquare, "Border", borderColor);
                 colorManager.ApplyColorsSpecificChildPrefab(newSquare, "Cube", cubeColor);
-                
+
                 // Adding the new gameObject with the prefab inside the array position of the two for
                 grids[x, z] = newSquare;
             }
@@ -93,16 +93,18 @@ public class LevelGrid : MonoBehaviour
 
     public GameObject SpawnItemOnTheGrid(GameObject itemPrefab, GameObject parentObject)
     {
+        if (itemPrefab == null || parentObject == null)
+        {
+            Debug.LogError("Prefab or Parent Object is null in SpawnItemOnTheGrid.");
+            return null;
+        }
         // Pick random grid positions using only integer values
         int randomX = Random.Range(0, sizeXGrid - 1);
         int randomZ = Random.Range(0, sizeZGrid - 1);
 
         Vector3 spawnPosition = grids[randomX, randomZ].transform.position;
 
-
-
-
-        // Instantiate the item at the spawn position
+       // Instantiate the item at the spawn position
         GameObject itemGameObject = Instantiate(itemPrefab);
         itemGameObject.transform.position = spawnPosition;
         itemGameObject.transform.SetParent(parentObject.transform);
@@ -142,6 +144,11 @@ public class LevelGrid : MonoBehaviour
     }
     private bool SpawnOverlap(List<Transform> spawnedItems, GameObject itemGameObject)
     {
+        if (itemGameObject == null)
+        {
+            Debug.LogError("Item GameObject is null.");
+            return true;
+        }
         bool positionOccupied = false;
 
         foreach (Transform existingItem in this.spawnedItems)
@@ -200,15 +207,5 @@ public class LevelGrid : MonoBehaviour
             wallObj.transform.localScale = new Vector3(rowLength * spacingGrid, wallObj.transform.localScale.y, colLength * spacingGrid);
         }
     }
-
-
-
-
-
-
-
-
-
-
     #endregion
 }
