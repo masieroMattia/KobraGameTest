@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class MenuNavigation : MonoBehaviour
@@ -9,7 +11,14 @@ public class MenuNavigation : MonoBehaviour
     public GameObject menu;
     public GameObject rules;
     public GameObject levels;
+    public GameObject loading;
     #endregion
+
+    #region Private Variables
+    private string levelToLoad = "";
+    #endregion
+
+    public string LevelToLoad { get { return levelToLoad; } }
 
     #region Life Cycle
     private void Start()
@@ -20,14 +29,7 @@ public class MenuNavigation : MonoBehaviour
 
     private void Update()
     {
-        // Permit to return the main menu window pressing the ESC key
-        bool back = !menu.activeSelf && Input.GetKey(KeyCode.Escape);
-        if (back)
-        {
-            menu.SetActive(true);
-            rules.SetActive(false);
-            levels.SetActive(false);
-        }
+        BackToMenu();
     }
     #endregion
 
@@ -52,6 +54,27 @@ public class MenuNavigation : MonoBehaviour
     {
         Debug.Log("Quit the game."); // Console feedback
         Application.Quit(); // Quit the game
+    }
+
+    // Enter Loading screen
+    public void LevelLoading(Button button)
+    {
+        loading.SetActive(true);
+        levels.SetActive(false);
+
+        levelToLoad = button.name;
+    }
+
+    public void BackToMenu()
+    {
+        // Permit to return the main menu window pressing the ESC key
+        bool back = !menu.activeSelf && !loading.activeSelf && Input.GetKey(KeyCode.Escape);
+        if (back)
+        {
+            menu.SetActive(true);
+            rules.SetActive(false);
+            levels.SetActive(false);
+        }
     }
     #endregion
 }
