@@ -12,11 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI retryText;
     [SerializeField] private TextMeshProUGUI mainMenuText;
 
-    [Header("References Menu Game")]
-    [SerializeField] private GameObject menuGamePanel;
-    [SerializeField] private Text resumeText;
-    [SerializeField] private Text menuGameText;
-
+    
     [Header("References Eggs Counter")]
     [SerializeField] private TextMeshProUGUI eggsCounterText;
 
@@ -28,13 +24,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int fontSizeGameOverText = 60;
 
     [Header("Menu Game UI Settings")]
-    [SerializeField] private Color colorMenuGamePanel = Color.red;
-    [SerializeField] private Color colorResumeText = Color.black;
-    [SerializeField] private Color colorMenuGameText = Color.black;
-    [SerializeField] private FontStyle fontStyleMainMenuText = FontStyle.Bold;
-    [SerializeField] private FontStyle fontStyleResumeText = FontStyle.Bold;
+    [SerializeField] private Color colorRetryText = Color.black;
+    [SerializeField] private Color colorMainMenuText = Color.black;
+    [SerializeField] private FontStyles fontStyleMainMenuText = FontStyles.Bold;
+    [SerializeField] private FontStyles fontStyleRetryText = FontStyles.Bold;
     [SerializeField] private int fontSizeMainMenuText = 60;
-    [SerializeField] private int fontSizeResumeText = 60;
+    [SerializeField] private int fontSizeRetryText = 60;
     [Tooltip("seconds")][SerializeField] private float resumeTransitionTime = 2f;
 
     [Header("Egg UI Settings")]
@@ -71,39 +66,37 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"isGameOver : {isGameOver.ToString()}");
-        if (Input.GetKeyDown(KeyCode.Escape) && isStop == false && isGameOver == false) StopGame(); 
+        Debug.Log(isResumeTransitioning.ToString());
+        if (Input.GetKeyDown(KeyCode.Escape) && isStop == false && isGameOver == false && isResumeTransitioning == false) StopGame(); 
 
-        else if (Input.GetKeyDown(KeyCode.Escape) && isStop == true && isGameOver == false)
+        else if (Input.GetKeyDown(KeyCode.Escape) && isStop == true && isGameOver == false && isResumeTransitioning == false)
         {
             ResumeGame();
-            Debug.Log(isStop.ToString());
         }
 
-        HandleTransition(isResumeTransitioning, resumeTransitionTime, ResumeTime);
-        HandleTransition(isGameOverTransitioning, gameOverTransitionTime, ShowGameOver);
+        HandleTransition(ref isResumeTransitioning, resumeTransitionTime, ResumeTime);
+        HandleTransition(ref isGameOverTransitioning, gameOverTransitionTime, ShowGameOver);
     }
     #endregion
 
     #region Private Methods
     private void ResetUI()
     {
-        gameOverPanel.SetActive(false);
-        menuGamePanel.SetActive(false);
-        gameOverText.text = "";
+        ToggleUIElements(false, false, true, false, false);
         eggsCounterText.text = "0";
-        eggsCounterText.enabled = true;
+        
+
     }
 
     private void ValidateReferences()
     {
-        if (!gameOverText || !gameOverPanel || !resumeText || !eggsCounterText)
+        if (!gameOverText || !gameOverPanel || !retryText || !eggsCounterText ||!mainMenuText)
         {
             Debug.LogError("One or more UI references are missing!");
         }
     }
 
-    private void HandleTransition(bool isTransitioning, float transitionTime, System.Action onComplete)
+    private void HandleTransition(ref bool isTransitioning, float transitionTime, System.Action onComplete)
     {
         if (isTransitioning)
         {
@@ -119,23 +112,20 @@ public class GameManager : MonoBehaviour
 
     private void ShowMenu()
     {
-        ToggleUIElements(true, false, false,false,false);
+        ToggleUIElements(true,false,false,true,true);
 
-        colorManager.ApplyColorToPanel(menuGamePanel, colorMenuGamePanel);
-        resumeText.color = colorResumeText;
-        menuGameText.color = colorMenuGameText;
+        retryText.color = colorRetryText;
+        mainMenuText.color = colorMainMenuText;
 
-        resumeText.text = "Resume";
-        menuGameText.text = "Main Menu";
-        resumeText.fontStyle = fontStyleResumeText;
-        menuGameText.fontStyle = fontStyleMainMenuText;
+        retryText.text = "Retry";
+        mainMenuText.text = "Main Menu";
+        retryText.fontStyle = fontStyleRetryText;
+        mainMenuText.fontStyle = fontStyleMainMenuText;
     }
 
     private void ShowGameOver()
     {
-        ToggleUIElements(false, true, false,true,true);
-        retryText.enabled = true;
-        mainMenuText.enabled = true;
+        ToggleUIElements(true, true, false,true,true);
         colorManager.ApplyColorToPanel(gameOverPanel, colorGameOverPanel);
         gameOverText.color = colorGameOverText;
         gameOverText.text = "Game Over";
@@ -145,12 +135,12 @@ public class GameManager : MonoBehaviour
         gameOverText.fontSize = fontSizeGameOverText;
     }
 
-    private void ToggleUIElements(bool isMenuVisible, bool isGameOverVisible, bool areEggsVisible, bool isRetryTextVisible, bool isMainMenuVisible)
+    private void ToggleUIElements(bool isGameOverVisible, bool isGameOverTextVisible, bool areEggsVisible, bool isRetryVisible, bool isMainMenuVisible)
     {
-        menuGamePanel.SetActive(isMenuVisible);
         gameOverPanel.SetActive(isGameOverVisible);
+        gameOverText.enableAutoSizing = isGameOverTextVisible;
         eggsCounterText.enabled = areEggsVisible;
-        retryText.enabled = isRetryTextVisible;
+        retryText.enabled = isRetryVisible;
         mainMenuText.enabled= isMainMenuVisible;
     }
     #endregion
@@ -161,7 +151,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(isStop.ToString());
         isStop = false;
         isResumeTransitioning = true;
-        ToggleUIElements(false, false, true,false,false);
+        ToggleUIElements(false,false, true,false,false);
 
     }
 
@@ -179,7 +169,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         myTime.Stop();
         if (audioManager) audioManager.StopClip(audioManager.level1);
-        if (isGameOverTransitioning == true) ToggleUIElements(false, false, false, false, false);
+        if (isGameOverTransitioning == true) ToggleUIElements(false,false, false, false, false);
         else ShowMenu();
     }
 
@@ -199,16 +189,21 @@ public class GameManager : MonoBehaviour
 
     public void UpdateEggsText(int eggsCounter)
     {
-        if (eggsCounterText)
-        {
-            eggsCounterText.fontStyle = fontStyleEggsCounterText;
-            eggsCounterText.color = colorEggsCounterText;
-            eggsCounterText.text = eggsCounter.ToString();
-        }
+        eggsCounterText.fontStyle = fontStyleEggsCounterText;
+        eggsCounterText.color = colorEggsCounterText;
+        eggsCounterText.text = eggsCounter.ToString();
+        
     }
     public void ReturnToMainMenu()
     {
         Debug.Log("Returning to Main Menu");
+    }
+    public void LoadScene(int level)
+    {
+        Time.timeScale = 1;
+        myTime.Restart();
+        LoadScenes loadScenes = new LoadScenes();
+        loadScenes.LoadLevel(level);
     }
     #endregion
 }
