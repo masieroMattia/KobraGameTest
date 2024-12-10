@@ -172,7 +172,7 @@ public class KobraHead : MonoBehaviour
     }
     void Start()
     {
-        audioManager.PlayClipAtPoint(audioManager.level1,audioManager.BGM,true,true);       
+        audioManager.PlayClipAtPointOneTime(audioManager.level1,audioManager.BGM,true,true);       
         
         transform.position = Vector3.zero;
         SpawnHead();
@@ -414,7 +414,7 @@ public class KobraHead : MonoBehaviour
             {
                 Debug.Log($"Collisione con maschera a posizione X: {mask.MaskObject.transform.position.x}, " +
                     $"Z: {mask.MaskObject.transform.position.z} con effetto: {mask.MaskInfo.Effect}");
-                audioManager.PlayClipAtPoint(audioManager.maskCollected, audioManager.SFX, true, false);
+                audioManager.PlayClipAtPointOneTime(audioManager.maskCollected, audioManager.SFX, true, false);
                 mask.MaskObject.gameObject.SetActive(false);
                 if (mask.MaskInfo.Effect == Effect.resurrect)
                 {

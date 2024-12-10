@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     [Header("References Game Over")]
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TextMeshProUGUI gameOverText;
+    [SerializeField] private TextMeshProUGUI retryText;
+    [SerializeField] private TextMeshProUGUI mainMenuText;
 
     [Header("References Menu Game")]
     [SerializeField] private GameObject menuGamePanel;
@@ -48,7 +50,8 @@ public class GameManager : MonoBehaviour
     private MyTime myTime;
     private AudioManager audioManager;
 
-    private bool isShowMenu = true;
+    private bool isStop = false;
+    private bool isGameOver = false;
     private float elapsedTime = 0f;
     #endregion
 
@@ -68,11 +71,17 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) StopGame();
-        if (Input.GetKeyDown(KeyCode.F1)) ResumeGame();
+        Debug.Log($"isGameOver : {isGameOver.ToString()}");
+        if (Input.GetKeyDown(KeyCode.Escape) && isStop == false && isGameOver == false) StopGame(); 
 
-        HandleTransition(isGameOverTransitioning, gameOverTransitionTime, ShowGameOver);
+        else if (Input.GetKeyDown(KeyCode.Escape) && isStop == true && isGameOver == false)
+        {
+            ResumeGame();
+            Debug.Log(isStop.ToString());
+        }
+
         HandleTransition(isResumeTransitioning, resumeTransitionTime, ResumeTime);
+        HandleTransition(isGameOverTransitioning, gameOverTransitionTime, ShowGameOver);
     }
     #endregion
 
@@ -110,55 +119,68 @@ public class GameManager : MonoBehaviour
 
     private void ShowMenu()
     {
-        ToggleUIElements(true, false, false);
+        ToggleUIElements(true, false, false,false,false);
 
         colorManager.ApplyColorToPanel(menuGamePanel, colorMenuGamePanel);
         resumeText.color = colorResumeText;
         menuGameText.color = colorMenuGameText;
 
+        resumeText.text = "Resume";
+        menuGameText.text = "Main Menu";
         resumeText.fontStyle = fontStyleResumeText;
         menuGameText.fontStyle = fontStyleMainMenuText;
     }
 
     private void ShowGameOver()
     {
-        ToggleUIElements(false, true, false);
-
+        ToggleUIElements(false, true, false,true,true);
+        retryText.enabled = true;
+        mainMenuText.enabled = true;
         colorManager.ApplyColorToPanel(gameOverPanel, colorGameOverPanel);
         gameOverText.color = colorGameOverText;
         gameOverText.text = "Game Over";
+        retryText.text = "Retry";
+        mainMenuText.text = "Menu";
         gameOverText.fontStyle = fontStyleGameOverText;
         gameOverText.fontSize = fontSizeGameOverText;
     }
 
-    private void ToggleUIElements(bool isMenuVisible, bool isGameOverVisible, bool areEggsVisible)
+    private void ToggleUIElements(bool isMenuVisible, bool isGameOverVisible, bool areEggsVisible, bool isRetryTextVisible, bool isMainMenuVisible)
     {
         menuGamePanel.SetActive(isMenuVisible);
         gameOverPanel.SetActive(isGameOverVisible);
         eggsCounterText.enabled = areEggsVisible;
+        retryText.enabled = isRetryTextVisible;
+        mainMenuText.enabled= isMainMenuVisible;
     }
     #endregion
 
     #region Public Methods
     public void ResumeGame()
     {
+        Debug.Log(isStop.ToString());
+        isStop = false;
         isResumeTransitioning = true;
-        ToggleUIElements(false, false, true);
+        ToggleUIElements(false, false, true,false,false);
+
     }
 
     private void ResumeTime()
     {
         Time.timeScale = 1;
         myTime.Restart();
-        if (audioManager) audioManager.PlayClipAtPoint(audioManager.level1, audioManager.BGM, true, true);
+        if (audioManager) audioManager.PlayClipAtPointOneTime(audioManager.level1, audioManager.BGM, true, true);
     }
 
     public void StopGame()
     {
+        Debug.Log(isStop.ToString());
+        isStop = true;
         Time.timeScale = 0;
         myTime.Stop();
         if (audioManager) audioManager.StopClip(audioManager.level1);
-        ShowMenu();
+        if (isGameOverTransitioning == true) ToggleUIElements(false, false, false, false, false);
+        else ShowMenu();
     }
 
     public void GameOver()
@@ -170,6 +192,7 @@ public class GameManager : MonoBehaviour
         }
 
         elapsedTime = 0;
+        isGameOver = true;
         isGameOverTransitioning = true;
         StopGame();
     }

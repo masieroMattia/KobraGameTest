@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - rowWallPosition: 5
-    colWallPosition: 8
-    rowLength: 3
-    colLength: 4
+    colWallPosition: 9
+    rowLength: 5
+    colLength: 3

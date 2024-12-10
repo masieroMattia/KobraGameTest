@@ -54,6 +54,32 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        // Prepare the game object for audio source component
+        GameObject sourceGO = new GameObject($"{clip.name}");
+
+        // Add the audio source component to the created game object
+        AudioSource source = sourceGO.AddComponent<AudioSource>();  // This 'source' is fine, as it is not inside the foreach loop
+
+        // Prepare audio source with needed data
+        source.clip = clip;
+        source.spatialBlend = 0.0f; // 2D sound
+        source.loop = loop;
+        if (!loop)  // Looping sounds must not destroy after the duration of a single loop
+            Destroy(sourceGO, clip.length);
+
+        source.outputAudioMixerGroup = targetGroup;
+
+        // Play audio clip
+        source.Play();
+    }
+    public void PlayClipAtPointOneTime(AudioClip clip, AudioMixerGroup targetGroup, bool autoDestroy = true, bool loop = false)
+    {
+        if (clip == null)
+        {
+            Debug.LogError("AudioClip is null!");
+            return;
+        }
+
         // Check if the clip is already playing before playing again
         AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
         foreach (var audioSource in allAudioSources) // Changed 'source' to 'audioSource'
@@ -73,7 +99,7 @@ public class AudioManager : MonoBehaviour
 
         // Prepare audio source with needed data
         source.clip = clip;
-        source.spatialBlend = 1.0f; // 3D sound
+        source.spatialBlend = 0.0f; // 3D sound
         source.loop = loop;
         if (!loop)  // Looping sounds must not destroy after the duration of a single loop
             Destroy(sourceGO, clip.length);
@@ -83,7 +109,6 @@ public class AudioManager : MonoBehaviour
         // Play audio clip
         source.Play();
     }
-
 
     public void StopClip(AudioClip clip)
     {
